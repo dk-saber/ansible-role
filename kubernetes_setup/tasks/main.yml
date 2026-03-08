@@ -1,0 +1,11 @@
+---
+- name: common config on all nodes
+  include_tasks: common.yml
+
+- name: specific config on Master
+  include_tasks: master.yml
+  when: "'master' in group_names"
+
+- name: specific config on Workers
+  include_tasks: nodes.yml
+  when: "'node' in group_names"

@@ -1,0 +1,51 @@
+---
+- name: checking cluster initialization
+  stat:
+    path: /etc/kubernetes/admin.conf
+  register: kube_init_exists
+
+- name: kubeadm config generation via template 
+  template:
+    src: kubeadm-config.yaml.j2
+    dest: /tmp/kubeadm-config.yaml
+  when: not kube_init_exists.stat.exists
+
+- name: initialising the Master 
+  command: kubeadm init --config /tmp/kubeadm-config.yaml
+  when: not kube_init_exists.stat.exists
+
+- name: .kube creation
+  file:
+    path: "/home/{{ ansible_user }}/.kube"
+    state: directory
+    mode: '0755'
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
+- name: copying admin.conf to user repos
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "/home/{{ ansible_user }}/.kube/config"
+    remote_src: yes
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0600'
+
+- name: generating Calico manifest
+  template:
+    src: calico.yaml.j2
+    dest: /tmp/calico.yaml
+
+- name: applying Calico manifest
+  command: kubectl apply -f /tmp/calico.yaml
+  become: false
+  register: calico_result
+  changed_when: "'created' in calico_result.stdout or 'configured' in calico_result.stdout"
+
+- name: token generation for Workers 
+  command: kubeadm token create --print-join-command
+  register: join_command_raw
+
+- name: sharing join command via hostvars 
+  set_fact:
+    kubernetes_join_command: "{{ join_command_raw.stdout }}"
