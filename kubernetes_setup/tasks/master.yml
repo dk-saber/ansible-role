@@ -10,9 +10,12 @@
     dest: /tmp/kubeadm-config.yaml
   when: not kube_init_exists.stat.exists
 
-- name: initialising the Master 
+- name: initialising the Master
   command: kubeadm init --config /tmp/kubeadm-config.yaml
   when: not kube_init_exists.stat.exists
+  register: kubeadm_init_result
+  changed_when: kubeadm_init_result.rc == 0
+  failed_when: kubeadm_init_result.rc != 0
 
 - name: .kube creation
   file:
