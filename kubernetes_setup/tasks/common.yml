@@ -70,7 +70,7 @@
   template:
     src: config.toml.j2
     dest: /etc/containerd/config.toml
-  notify: redémarrer containerd
+  notify: restart containerd
 
 - name: installating (kubelet et kubeadm) packages
   apt:
