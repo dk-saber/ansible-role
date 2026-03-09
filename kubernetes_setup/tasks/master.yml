@@ -45,9 +45,10 @@
   register: calico_result
   changed_when: "'created' in calico_result.stdout or 'configured' in calico_result.stdout"
 
-- name: token generation for Workers 
+- name: token generation for Workers
   command: kubeadm token create --print-join-command
   register: join_command_raw
+  changed_when: false
 
 - name: sharing join command via hostvars 
   set_fact:
