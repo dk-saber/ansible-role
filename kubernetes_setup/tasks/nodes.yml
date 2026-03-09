@@ -4,7 +4,7 @@
   register: kubelet_conf
 
 - name: Joining Kubernetes cluster 
-  command: "{{ hostvars['master-01']['kubernetes_join_command'] }}"
+  command: "{{ hostvars[groups['master'][0]]['kubernetes_join_command'] }}"
   register: join_result
   failed_when: 
     - join_result.rc != 0 
