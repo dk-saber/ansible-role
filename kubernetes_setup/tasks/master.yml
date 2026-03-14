@@ -19,19 +19,19 @@
 
 - name: .kube creation
   file:
-    path: "/home/{{ ansible_user }}/.kube"
+    path: "/home/{{ kube_admin_user }}/.kube"
     state: directory
     mode: '0755'
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: "{{ kube_admin_user }}"
+    group: "{{ kube_admin_user }}"
 
 - name: copying admin.conf to user repos
   copy:
     src: /etc/kubernetes/admin.conf
-    dest: "/home/{{ ansible_user }}/.kube/config"
+    dest: "/home/{{ kube_admin_user }}/.kube/config"
     remote_src: yes
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: "{{ kube_admin_user }}"
+    group: "{{ kube_admin_user }}"
     mode: '0600'
 
 - name: generating Calico manifest
