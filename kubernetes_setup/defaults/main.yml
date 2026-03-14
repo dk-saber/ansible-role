@@ -6,4 +6,4 @@ k8s_version: "1.32"
 pod_network_cidr: "192.168.0.0/16"
 
 # kubectl config user
-ansible_user: "devops"
+kube_admin_user: "devops"
