@@ -9,6 +9,11 @@
     state: absent
   loop: ["none", "swap"]
 
+- name: disable swap systemd units
+  shell: |
+    systemctl --type swap --all | awk '/\.swap/ {print $1}' | xargs -r systemctl mask
+  changed_when: false
+
 - name: Charging pre-requisit modules
   modprobe:
     name: "{{ item }}"
