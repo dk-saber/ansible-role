@@ -2,12 +2,11 @@
   ansible.builtin.command: swapoff -a
   when: ansible_swaptotal_mb > 0
 
-- name: delete swap from fstab file
-  ansible.builtin.mount:
-    name: "{{ item }}"
-    fstype: swap
-    state: absent
-  loop: ["none", "swap"]
+- name: remove swap from fstab
+  ansible.builtin.replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '# \1'
 
 - name: disable swap systemd units
   ansible.builtin.shell: |
