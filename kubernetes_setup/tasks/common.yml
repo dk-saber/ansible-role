@@ -1,21 +1,21 @@
 - name: disable swap
-  command: swapoff -a
+  ansible.builtin.command: swapoff -a
   when: ansible_swaptotal_mb > 0
 
 - name: delete swap from fstab file
-  mount:
+  ansible.builtin.mount:
     name: "{{ item }}"
     fstype: swap
     state: absent
   loop: ["none", "swap"]
 
 - name: disable swap systemd units
-  shell: |
+  ansible.builtin.shell: |
     systemctl --type swap --all | awk '/\.swap/ {print $1}' | xargs -r systemctl mask
   changed_when: false
 
 - name: Charging pre-requisit modules
-  modprobe:
+  community.general.modprobe:
     name: "{{ item }}"
     state: present
   loop:
@@ -23,7 +23,7 @@
     - br_netfilter
 
 - name: sysctl config for kubernetes
-  sysctl:
+  ansible.posix.sysctl:
     name: "{{ item.key }}"
     value: "{{ item.value }}"
     state: present
@@ -35,51 +35,51 @@
     - { key: 'net.ipv4.ip_forward', value: '1' }
 
 - name: hosts resolution in /etc/hosts
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/hosts
     regexp: ".*{{ inventory_hostname }}$"
     line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}"
     state: present
 
 - name: adding GPG key
-  get_url:
+  ansible.builtin.get_url:
     url: https://download.docker.com/linux/ubuntu/gpg
     dest: /etc/apt/keyrings/docker.asc
 
 - name: adding containerd repos
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
     state: present
 
 - name: Installing containerd
-  apt:
+  ansible.builtin.apt:
     name: containerd.io
     state: present
     update_cache: yes
 
 - name: downloding Kubernetes GPG key
-  get_url:
+  ansible.builtin.get_url:
     url: "https://pkgs.k8s.io/core:/stable:/v{{ k8s_version }}/deb/Release.key"
     dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
 
 - name: adding kubernets {{ k8s_version }} repos
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/{{ k8s_version }}/deb/ /"
     state: present
 
 - name: creating containerd config directory
-  file:
+  ansible.builtin.file:
     path: /etc/containerd
     state: directory
 
 - name: deploying  containerd config via template
-  template:
+  ansible.builtin.template:
     src: config.toml.j2
     dest: /etc/containerd/config.toml
   notify: restart containerd
 
 - name: installating (kubelet et kubeadm) packages
-  apt:
+  ansible.builtin.apt:
     name:
       - kubelet
       - kubeadm
@@ -87,17 +87,17 @@
     update_cache: yes
 
 - name: installing kubectl on Master
-  apt:
+  ansible.builtin.apt:
     name: kubectl
     state: present
   when: inventory_hostname in groups['master']
 
 - name: retrieving installed packages list
-  package_facts:
+  ansible.builtin.package_facts:
     manager: auto
 
 - name: holding packages version
-  dpkg_selections:
+  ansible.builtin.dpkg_selections:
     name: "{{ item }}"
     selection: hold
   loop:
