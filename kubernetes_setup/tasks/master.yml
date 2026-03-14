@@ -53,3 +53,4 @@
 - name: sharing join command via hostvars 
   set_fact:
     kubernetes_join_command: "{{ join_command_raw.stdout }}"
+  no_log: true
