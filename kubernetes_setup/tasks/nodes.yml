@@ -1,10 +1,10 @@
 - name: verefying if node has joined the cluster
-  stat:
+  ansible.builtin.stat:
     path: /etc/kubernetes/kubelet.conf
   register: kubelet_conf
 
 - name: Joining Kubernetes cluster 
-  command: "{{ hostvars[groups['master'][0]]['kubernetes_join_command'] }}"
+  ansible.builtin.command: "{{ hostvars[groups['master'][0]]['kubernetes_join_command'] }}"
   no_log: true
   register: join_result
   failed_when: 
