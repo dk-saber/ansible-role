@@ -87,6 +87,12 @@
     state: present
     update_cache: yes
 
+- name: enable and start kubelet
+  ansible.builtin.service:
+    name: kubelet
+    state: started
+    enabled: true
+    
 - name: installing kubectl on Master
   ansible.builtin.apt:
     name: kubectl
