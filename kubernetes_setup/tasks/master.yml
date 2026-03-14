@@ -17,6 +17,13 @@
   changed_when: kubeadm_init_result.rc == 0
   failed_when: kubeadm_init_result.rc != 0
 
+- name: wait for API server to be ready
+  ansible.builtin.wait_for:
+    host: "{{ ansible_host }}"
+    port: 6443
+    delay: 10
+    timeout: 120
+    
 - name: .kube creation
   ansible.builtin.file:
     path: "/home/{{ kube_admin_user }}/.kube"
