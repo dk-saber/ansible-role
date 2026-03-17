@@ -95,6 +95,14 @@
     path: /var/run/containerd/containerd.sock
     timeout: 30
 
+- name: verify containerd CRI is functional
+  ansible.builtin.command: crictl --runtime-endpoint unix:///var/run/containerd/containerd.sock info
+  changed_when: false
+  retries: 5
+  delay: 3
+  register: crictl_result
+  until: crictl_result.rc == 0
+
 - name: installating (kubelet et kubeadm) packages
   ansible.builtin.apt:
     name:
