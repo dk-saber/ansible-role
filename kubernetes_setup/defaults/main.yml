@@ -1,6 +1,6 @@
 ---
 # Kubernetes version
-k8s_version: "1.32"
+k8s_version: "v1.32"
 
 # Pods CIDR (Calico recommandation)
 pod_network_cidr: "192.168.0.0/16"
