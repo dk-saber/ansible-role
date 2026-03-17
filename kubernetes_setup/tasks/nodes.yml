@@ -10,4 +10,5 @@
   failed_when: 
     - join_result.rc != 0 
     - "'already exists' not in join_result.stderr"
+  changed_when: join_result.rc == 0
   when: not kubelet_conf.stat.exists
