@@ -1,3 +1,9 @@
+- name: disable unattended-upgrades
+  ansible.builtin.systemd:
+    name: unattended-upgrades
+    state: stopped
+    enabled: false
+    
 - name: disable swap
   ansible.builtin.command: swapoff -a
   when: ansible_swaptotal_mb > 0
