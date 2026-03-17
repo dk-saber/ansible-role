@@ -71,5 +71,5 @@
 - name: sharing join command via hostvars 
   ansible.builtin.set_fact:
     kubernetes_join_command: "{{ join_command_raw.stdout }}"
+    cacheable: true
   no_log: true
-  cacheable: true
