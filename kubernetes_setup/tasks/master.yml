@@ -1,4 +1,14 @@
 ---
+- name: installing kubectl
+  ansible.builtin.apt:
+    name: kubectl
+    state: present
+
+- name: holding kubectl version
+  ansible.builtin.dpkg_selections:
+    name: kubectl
+    selection: hold
+    
 - name: checking cluster initialization
   ansible.builtin.stat:
     path: /etc/kubernetes/admin.conf
