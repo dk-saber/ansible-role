@@ -8,4 +8,4 @@
 
 - name: specific config on Workers
   include_tasks: nodes.yml
-  when: "'node' in group_names"
+  when: "'nodes' in group_names"
