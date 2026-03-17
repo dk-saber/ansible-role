@@ -1,12 +1,27 @@
 ---
-- name: Common + master setup
+- name: Common setup on all nodes
+  hosts: all
+  become: yes
+  tasks:
+    - name: common config on all nodes
+      ansible.builtin.include_role:
+        name: kubernetes_setup
+        tasks_from: common
+
+- name: Master setup
   hosts: master
   become: yes
-  roles:
-    - kubernetes_setup
+  tasks:
+    - name: specific config on Master
+      ansible.builtin.include_role:
+        name: kubernetes_setup
+        tasks_from: master
 
 - name: Workers setup
   hosts: nodes
   become: yes
-  roles:
-    - kubernetes_setup
+  tasks:
+    - name: specific config on Workers
+      ansible.builtin.include_role:
+        name: kubernetes_setup
+        tasks_from: nodes
