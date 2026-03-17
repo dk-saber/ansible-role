@@ -84,6 +84,17 @@
     dest: /etc/containerd/config.toml
   notify: restart containerd
 
+- name: ensure containerd is restarted and ready
+  ansible.builtin.systemd:
+    name: containerd
+    state: restarted
+    daemon_reload: yes
+
+- name: wait for containerd socket
+  ansible.builtin.wait_for:
+    path: /var/run/containerd/containerd.sock
+    timeout: 30
+
 - name: installating (kubelet et kubeadm) packages
   ansible.builtin.apt:
     name:
