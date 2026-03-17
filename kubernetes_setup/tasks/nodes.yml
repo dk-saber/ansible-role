@@ -5,7 +5,7 @@
 
 - name: Joining Kubernetes cluster 
   ansible.builtin.command: "{{ hostvars[groups['master'][0]]['kubernetes_join_command'] }}"
-  no_log: true
+  #no_log: true
   register: join_result
   failed_when: 
     - join_result.rc != 0 
