@@ -1,6 +1,12 @@
 ---
-- name: Kubernetes cluster deployment
-  hosts: all
+- name: Common + master setup
+  hosts: master
+  become: yes
+  roles:
+    - kubernetes_setup
+
+- name: Workers setup
+  hosts: nodes
   become: yes
   roles:
     - kubernetes_setup
