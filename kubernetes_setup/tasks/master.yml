@@ -72,3 +72,4 @@
   ansible.builtin.set_fact:
     kubernetes_join_command: "{{ join_command_raw.stdout }}"
   no_log: true
+  cacheable: true
