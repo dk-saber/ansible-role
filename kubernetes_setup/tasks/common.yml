@@ -98,12 +98,6 @@
     state: started
     enabled: true
     
-- name: installing kubectl on Master
-  ansible.builtin.apt:
-    name: kubectl
-    state: present
-  when: inventory_hostname in groups['master']
-
 - name: retrieving installed packages list
   ansible.builtin.package_facts:
     manager: auto
@@ -115,5 +109,4 @@
   loop:
     - kubelet
     - kubeadm
-    - kubectl
   when: item in ansible_facts.packages
