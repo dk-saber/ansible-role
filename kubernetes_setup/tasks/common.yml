@@ -6,8 +6,8 @@
     
 - name: disable swap
   ansible.builtin.command: swapoff -a
-  when: ansible_swaptotal_mb > 0
-  changed_when: ansible_swaptotal_mb > 0
+  when: ansible_facts['swaptotal_mb'] > 0
+  changed_when: ansible_facts['swaptotal_mb'] > 0
 
 - name: remove swap from fstab
   ansible.builtin.replace:
@@ -44,7 +44,7 @@
   ansible.builtin.lineinfile:
     path: /etc/hosts
     regexp: ".*{{ inventory_hostname }}$"
-    line: "{{ ansible_default_ipv4.address }} {{ inventory_hostname }}"
+    line: "{{ ansible_facts['default_ipv4']['address'] }} {{ inventory_hostname }}"
     state: present
 
 - name: adding GPG key
@@ -55,7 +55,7 @@
 
 - name: adding containerd repos
   ansible.builtin.apt_repository:
-    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+    repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_facts['distribution_release'] }} stable"
     state: present
 
 - name: Installing containerd
