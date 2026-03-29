@@ -1,7 +1,8 @@
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: InitConfiguration
 localAPIEndpoint:
-  advertiseAddress: "{{ ansible_host }}"
+  #advertiseAddress: "{{ ansible_host }}"
+  advertiseAddress: "{{ ansible_facts['default_ipv4']['address'] }}"
   bindPort: 6443
 nodeRegistration:
   criSocket: unix:///var/run/containerd/containerd.sock
