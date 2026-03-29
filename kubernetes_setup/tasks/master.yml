@@ -29,7 +29,8 @@
 
 - name: wait for API server to be ready
   ansible.builtin.wait_for:
-    host: "{{ ansible_host }}"
+    #host: "{{ ansible_host }}"
+    host: "{{ ansible_facts['default_ipv4']['address'] }}"
     port: 6443
     delay: 10
     timeout: 120
